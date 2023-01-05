@@ -2,10 +2,11 @@ pipeline {
   agent any
 
   environment {
-    NAME = "planets"
+    NAME = "solar-system"
     VERSION = "${env.BUILD_ID}-${env.GIT_COMMIT}"
-    IMAGE_REPO = "siddharth67"
+    IMAGE_REPO = "eromski"
     GIT_TOKEN = credentials('github-token')
+    ARGOCD_TOKEN = credentials('argocd-token')
   }
   
   stages {
@@ -34,17 +35,17 @@ pipeline {
     stage('Clone/Pull Repo') {
       steps {
         script {
-          if (fileExists('test-cd')) {
+          if (fileExists('for_argocd_practice')) {
 
             echo 'Cloned repo already exists - Pulling latest changes'
 
-            dir("test-cd") {
+            dir("for_argocd_practice") {
               sh 'git pull'
             }
 
           } else {
             echo 'Repo does not exists - Cloning the repo'
-            sh 'git clone -b feature https://github.com/sidd-harth/test-cd.git'
+            sh 'git clone -b feature-github https://github.com/eromsubebe/for_argocd_practice.git'
           }
         }
       }
@@ -53,7 +54,7 @@ pipeline {
     stage('Update Manifest') {
 
       steps {
-        dir("test-cd/jenkins-demo") {
+        dir("for_argocd_practice/ArgoCD-Apps/solar-system") {
           sh "git config --global user.email 'ci@ci.com'"
           sh 'sed -i "s#siddharth67.*#${IMAGE_REPO}/${NAME}:${VERSION}#g" deployment.yaml'
           sh 'cat deployment.yaml'
@@ -64,12 +65,12 @@ pipeline {
     stage('Commit & Push') {
 
       steps {
-        dir("test-cd/jenkins-demo") {
-          sh 'git remote set-url origin https://$GIT_TOKEN@github.com/sidd-harth/test-cd.git'
-          sh 'git checkout feature'
+        dir("for_argocd_practice/ArgoCD-Apps/solar-system") {
+          sh 'git remote set-url origin https://$GIT_TOKEN@github.com/eromsubebe/for_argocd_practice.git '
+          sh 'git checkout feature-github'
           sh 'git add -A'
           sh 'git commit -am "Updated new image version for VERSION - $VERSION"'
-          sh 'git push origin feature'
+          sh 'git push origin feature-github'
         }
       }
     }
@@ -77,8 +78,8 @@ pipeline {
     stage('Raise PR') {
 
       steps {
-        dir("test-cd/jenkins-demo") {
-          sh 'gh auth login -h github.com  -p https --with-token < /home/devsecops/token.txt'
+        dir("for_argocd_practice/ArgoCD-Apps/solar-system") {
+          sh 'gh auth login -h github.com  -p https --with-token < /home/eromoseleubebe/token.txt'
           sh 'gh auth status'
           sh 'gh pr create -a @me --title "Updated Image Version - $VERSION" --body "Planets Updated in Solar System - $VERSION"  -B main'
         }
