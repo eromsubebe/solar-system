@@ -81,7 +81,7 @@ pipeline {
         dir("for_argocd_practice/ArgoCD-Apps/solar-system") {
           sh 'gh auth login -h github.com  -p https --with-token < /home/my_jenkins_home/jenkins/token.txt'
           sh 'gh auth status'
-          // sh 'gh pr create -a @me --title "Updated Image Version - $VERSION" --body "Planets Updated in Solar System - $VERSION"  -B main'
+          sh 'gh pr create -a @me --title "Updated Image Version - $VERSION" --body "Planets Updated in Solar System - $VERSION"  -B main'
         }
       }
     }
