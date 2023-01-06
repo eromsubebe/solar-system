@@ -45,7 +45,7 @@ pipeline {
 
           } else {
             echo 'Repo does not exists - Cloning the repo'
-            sh 'git clone -b feature-github https://github.com/eromsubebe/for_argocd_practice.git'
+            sh 'git clone -b feature https://github.com/eromsubebe/for_argocd_practice.git'
           }
         }
       }
@@ -67,10 +67,10 @@ pipeline {
       steps {
         dir("for_argocd_practice/ArgoCD-Apps/solar-system") {
           sh 'git remote set-url origin https://$GIT_TOKEN@github.com/eromsubebe/for_argocd_practice.git '
-          sh 'git checkout feature-github'
+          sh 'git checkout feature'
           sh 'git add -A'
           sh 'git commit -am "Updated new image version for VERSION - $VERSION"'
-          sh 'git push origin feature-github'
+          sh 'git push origin feature'
         }
       }
     }
