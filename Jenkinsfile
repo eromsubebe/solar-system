@@ -79,7 +79,7 @@ pipeline {
 
       steps {
         // dir("for_argocd_practice/ArgoCD-Apps/solar-system") {
-          sh 'gh auth login -h github.com  -p https --with-token < /home/my_jenkins_home/jenkins/token.txt'
+          sh 'gh auth login -h github.com  -p https --with-token < /var/lib/jenkins/token.txt'
           sh 'git clone -b feature https://github.com/eromsubebe/for_argocd_practice.git'
           sh 'gh auth status'
           sh 'git -C "for_argocd_practice/ArgoCD-Apps/solar-system"'
