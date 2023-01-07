@@ -26,7 +26,7 @@ pipeline {
 
     stage('Push Image') {
       steps {
-        withDockerRegistry([credentialsId: "docker-hub", url: ""]) {
+        withDockerRegistry([credentialsId: "docker_hub", url: ""]) {
           sh 'docker push ${IMAGE_REPO}/${NAME}:${VERSION}'
         }
       }
@@ -41,11 +41,13 @@ pipeline {
 
             dir("for_argocd_practice") {
               sh 'git pull'
+              sh 'git clean -xffd'
             }
 
           } else {
             echo 'Repo does not exists - Cloning the repo'
             sh 'git clone -b feature https://github.com/eromsubebe/for_argocd_practice.git'
+            sh 'git clean -xffd'
           }
         }
       }
@@ -66,11 +68,13 @@ pipeline {
 
       steps {
         dir("for_argocd_practice/ArgoCD-Apps/solar-system") {
-          sh 'git remote set-url origin https://$GIT_TOKEN@github.com/eromsubebe/for_argocd_practice.git '
+          sh 'git remote set-url origin https://$GIT_TOKEN@github.com/eromsubebe/for_argocd_practice.git'
+          sh 'git clean -xffd'
           sh 'git checkout feature'
           sh 'git add -A'
-          sh 'git commit -am "Updated new image version for VERSION - $VERSION"'
+          sh 'git diff-index --quiet HEAD || git commit -am "Updated new image version for VERSION - $VERSION"'
           sh 'git push origin feature'
+          sh 'git clean -xffd'
         }
       }
     }
