@@ -46,7 +46,7 @@ pipeline {
 
           } else {
             echo 'Repo does not exists - Cloning the repo'
-            sh 'git clone -b feature https://github.com/eromsubebe/for_argocd_practice.git'
+            sh 'git clone -b eroms-feature https://github.com/eromsubebe/for_argocd_practice.git'
             sh 'git clean -xffd'
           }
         }
@@ -70,10 +70,10 @@ pipeline {
         dir("for_argocd_practice/ArgoCD-Apps/solar-system") {
           sh 'git remote set-url origin https://$GIT_TOKEN@github.com/eromsubebe/for_argocd_practice.git'
           sh 'git clean -xffd'
-          sh 'git checkout feature'
+          sh 'git checkout eroms-feature'
           sh 'git add -A'
           sh 'git diff-index --quiet HEAD || git commit -am "Updated new image version for VERSION - $VERSION"'
-          sh 'git push origin feature'
+          sh 'git push origin eroms-feature'
           sh 'git clean -xffd'
         }
       }
@@ -84,7 +84,7 @@ pipeline {
           sh 'gh auth login -h github.com  -p https --with-token < /var/lib/jenkins/token.txt'
           sh 'gh auth status'
           sh 'cd for_argocd_practice/ArgoCD-Apps/solar-system'
-          sh 'git checkout feature'
+          sh 'git checkout eroms-feature'
           sh 'gh pr create -a @me --title "Updated Image Version - $VERSION" --body "Planets Updated in Solar System - $VERSION"  -B main'
       }
     }
